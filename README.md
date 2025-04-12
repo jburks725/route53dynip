@@ -66,7 +66,7 @@ jburks725/route53dynip mydynamic.hostname.com
 
 It's recommended that you create a separate IAM user for running this, and
 that you grant it only the permissions necessary to create the A record
-you want.
+you want. There is a Cloudformation template in this repo for creating one.
 
 You'll want to look up the Route 53 ZoneId of the target Hosted Zone, 
 and substitute it into the policy below. This allows listing your zones, 

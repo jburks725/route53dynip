@@ -1,0 +1,37 @@
+---
+AWSTemplateFormatVersion: "version date"
+
+Description:
+  A simple CFN template for creating your IAM Policy
+Parameters:
+  ZoneId:
+    Description: The Route 53 ZoneId to use
+    Type: String
+    MinLength: 15
+    MaxLength: 15
+  IamUserName:
+    Description: The IAM user name to create
+    Type: String
+    MinLength: 3
+    MaxLength: 15
+Resources:
+  Type: AWS::IAM::Policy
+    AllowedPattern: 'Z[A-Z0-9]{14}'
+  Properties: 
+    PolicyDocument: 
+      Version: "2012-10-17"
+      Statement:
+      - Effect: Allow
+        Resource: '*'
+        Action: 
+        - "route53:ListHostedZones"
+          "route53:ListHostedZonesByName"
+      - Effect: Allow
+        Resource: !Ref ZoneId
+        Action:
+        - "route53:ListResourceRecordSets"
+          "route53:ChangeResourceRecordSets"
+    PolicyName: route53dynip
+    Users: 
+      - !Ref IamUser
+
