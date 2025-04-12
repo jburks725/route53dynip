@@ -13,7 +13,7 @@ update-base:
 
 .PHONY: docker-build-local
 docker-build-local:
-	docker build -f Dockerfile -t $(IMG):$(VERSION) . ;\
+	docker build --no-cache -f Dockerfile -t $(IMG):$(VERSION) . ;\
 	docker tag $(IMG):$(VERSION) $(IMG):latest ;\
 
 .PHONY: docker-push
@@ -31,3 +31,19 @@ docker-multiarch:
 clean:
 	docker rmi $(IMG):$(VERSION) || true ;\
 	docker rmi $(IMG):latest || true
+
+# New targets for testing
+.PHONY: test
+test:
+	python run_tests.py
+
+.PHONY: test-coverage
+test-coverage:
+	python -m coverage run --source=. run_tests.py
+	python -m coverage report -m
+	python -m coverage html
+
+.PHONY: test-docker
+test-docker:
+	docker build -f Dockerfile.test -t $(IMG):test .
+	docker run --rm $(IMG):test

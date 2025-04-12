@@ -68,9 +68,16 @@ It's recommended that you create a separate IAM user for running this, and
 that you grant it only the permissions necessary to create the A record
 you want.
 
-You'll want to look up the Route 53 ZoneId of the target Hosted Zone (easiest
-to do that via the console), and substitute it into the policy below. This
-allows listing your zones, and modifications to only the appropriate zone).
+You'll want to look up the Route 53 ZoneId of the target Hosted Zone, 
+and substitute it into the policy below. This allows listing your zones, 
+and modifications to only the appropriate zone.
+
+Use the following AWS CLI command, or the AWS Console, to look up your
+ZoneId. 
+
+```terminal
+aws route53 list-hosted-zones-by-name --dns-name {yourdomain}.com. --max-items 1 --output json | jq -r '.HostedZones[0].Id' | cut -d/ -f3
+```
 
 ```json
 {
@@ -104,15 +111,17 @@ the credentials directly via environment variables.
 
 ## Building the Docker image(s)
 
-The `Dockerfile`s in this repo will build an image based on `python:alpine` (amd64)
-and the arch-specific `python:slim-stretch` images for ARMv7 and ARMv8 (64-bit).
+The `Dockerfile`s in this repo will be an image based on Chainguard's latest `python`
+image, using their dev image to install the Boto3 library. The Makefile has targets to
+build the image locally as well as use `buildx` to build multi-arch images. 
 
-The `build.sh` script will build images for `amd64`, `arm32v7`, and `arm64v8` architectures
-and push appropriate manifests to Docker Hub to support multiarch. It takes two arguments,
-the image tag (I use `jburks725/route53dynip`) and a version tag. Minimal error checking is
-done here, so use at your own risk.
+The default architectures are `amd64`, `arm32v7`, and `arm64`, which can be overridden
+with the `ARCHES` variable when running make.
 
-It copies the Python script into `/`, and executes as user `nobody`.
+There are also Make targets for pushing to Dockerhub, execute unit tests, and clean up
+the images in your local Docker daemon.
+
+It copies the Python script into `/route53dynip`, and executes as user `nonroot`.
 
 The latest version of this image should be available on DockerHub at
 https://hub.docker.com/r/jburks725/route53dynip/.
@@ -152,8 +161,32 @@ you'd like. See [crontab guru](https://crontab.guru) for more information on cro
 - [x] Add basic Kubernetes support
 - [x] Add support as a Kubernetes cronjob
 - [x] Convert to proper Docker multi-arch build
+- [x] Add unit tests
 - [ ] Helm Chart
 - [ ] Allow customization of TTL
 - [ ] Allow custom polling interval (currently 30 minutes)
 - [ ] Maybe some logging verbosity control?
 - [ ] Learn Python better!
+
+## Running Tests
+
+The project includes a comprehensive test suite to verify functionality. There are several ways to run the tests:
+
+### Local Testing
+
+```bash
+# Run the basic test suite
+make test
+
+# Run tests with code coverage reporting
+make test-coverage
+```
+
+### Docker-based Testing
+
+```bash
+# Build and run tests in Docker container
+make test-docker
+```
+
+This ensures the application works as expected in isolation, which is especially useful for CI/CD pipelines.
