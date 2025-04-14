@@ -4,7 +4,7 @@ IMG ?= jburks725/route53dynip
 VERSION ?= 1
 
 # Architectures we can build for
-ARCHES = linux/amd64,linux/arm/v7,linux/arm64
+ARCHES = linux/amd64,linux/arm64
 
 .PHONY: update-base
 update-base:
