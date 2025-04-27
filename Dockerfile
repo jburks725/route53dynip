@@ -3,9 +3,9 @@ FROM cgr.dev/chainguard/python:latest-dev AS builder
 WORKDIR /route53dynip
 RUN python -m venv venv
 ENV PATH=/route53dynip/venv/bin:$PATH
-COPY requirements.txt requirements.txt
+COPY requirements.txt .
 # Install libraries
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 FROM cgr.dev/chainguard/python:latest
 # Run as non-root user (Chainguard images typically already use a non-root user)

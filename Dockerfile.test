@@ -1,15 +1,15 @@
-FROM cgr.dev/chainguard/python:latest
+FROM cgr.dev/chainguard/python:latest-dev
 
 # Install test dependencies
-RUN pip install --no-cache-dir boto3 coverage
+RUN pip install --no-cache-dir boto3 requests coverage
 
 # Create and set working directory
 WORKDIR /app
 
 # Copy application files
 COPY route53dynip.py /app/
-COPY tests/ /app/tests/
+COPY test_*.py /app/
 COPY run_tests.py /app/
 
 # Run tests
-CMD ["python", "run_tests.py"]
+CMD ["run_tests.py"]
