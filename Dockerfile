@@ -2,7 +2,7 @@ FROM cgr.dev/chainguard/python:latest-dev AS builder
 
 WORKDIR /route53dynip
 RUN python -m venv venv
-ENV PATH="/route53dynip/venv/bin":$PATH
+ENV PATH=/route53dynip/venv/bin:$PATH
 COPY requirements.txt requirements.txt
 # Install libraries
 RUN pip install -r requirements.txt
@@ -15,7 +15,7 @@ WORKDIR /route53dynip
 
 # Set Python to run unbuffered for proper log streaming
 ENV PYTHONUNBUFFERED=TRUE
-ENV PATH="/route53dynip/venv/bin":$PATH
+ENV PATH=/route53dynip/venv/bin:$PATH
 
 # Copy the application script
 COPY route53dynip.py route53dynip.py
