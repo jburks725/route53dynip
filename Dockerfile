@@ -15,6 +15,7 @@ WORKDIR /route53dynip
 
 # Set Python to run unbuffered for proper log streaming
 ENV PYTHONUNBUFFERED=TRUE
+ENV LOGLEVEL=INFO
 ENV PATH=/route53dynip/venv/bin:$PATH
 
 # Copy the application script

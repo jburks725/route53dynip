@@ -24,14 +24,16 @@ import time
 import argparse
 import logging
 from datetime import datetime
+from os import environ
 import boto3
 from botocore.exceptions import ClientError
 
 # Constants
 SLEEP_INTERVAL = 1800  # 30 minutes
 
-# Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+# Configure logging with the specified log level
+LOGLEVEL = environ.get('LOGLEVEL', 'INFO').upper()
+logging.basicConfig(level=LOGLEVEL, format='%(asctime)s - %(levelname)s - %(message)s')
 
 class GracefulKiller:
     def __init__(self):

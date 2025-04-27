@@ -20,12 +20,12 @@ IP address. If it cannot retrieve the IP (rate limiting?), skip to step 4.
 to the one looked up in step 1. If they match, skip to step 4.
 1. It executes `Route53.ChangeResourceRecordSets` to UPSERT an A record with
 a 5 minute TTL pointing to the current IP address.
-1. Sleep for 30 minutes or exit if `--onetime` is passed as an argument.
+1. Sleep for 30 minutes and loop, or exit if `--onetime` is passed as an argument.
 
 ## How to Run
 
 ```text
-$ python3 route53dynip.py --help
+$ python route53dynip.py --help
 usage: route53dynip.py [-h] [--onetime] fqdn
 
 positional arguments:
@@ -34,6 +34,9 @@ positional arguments:
 optional arguments:
   -h, --help  show this help message and exit
   --onetime   update the DNS entry and exit
+
+environment variables:
+  LOGLEVEL    control logging verbosity, default is INFO
 ```
 
 ### Rate Limits at http://ipinfo.io
@@ -112,10 +115,10 @@ the credentials directly via environment variables.
 ## Building the Docker image(s)
 
 The `Dockerfile`s in this repo will be an image based on Chainguard's latest `python`
-image, using their dev image to install the Boto3 library. The Makefile has targets to
+image, using their dev image to install the Boto3 and requests libraries. The Makefile has targets to
 build the image locally as well as use `buildx` to build multi-arch images. 
 
-The default architectures are `amd64`, `arm32v7`, and `arm64`, which can be overridden
+The default architectures are `amd64` and `arm64`, which can be overridden
 with the `ARCHES` variable when running make.
 
 There are also Make targets for pushing to Dockerhub, execute unit tests, and clean up
@@ -165,7 +168,7 @@ you'd like. See [crontab guru](https://crontab.guru) for more information on cro
 - [ ] Helm Chart
 - [ ] Allow customization of TTL
 - [ ] Allow custom polling interval (currently 30 minutes)
-- [ ] Maybe some logging verbosity control?
+- [x] Maybe some logging verbosity control
 - [ ] Learn Python better!
 
 ## Running Tests
